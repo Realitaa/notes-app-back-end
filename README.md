@@ -59,6 +59,13 @@ npm run dev
 npm run start
 ```
 
+## Testing
+
+1. Open Postman.
+2. Import collection and environtment in folder [`test`](test/).
+3. Choose Notes API Test as your environtment test.
+4. Run collection test.
+
 ## Closing
 
 Thank you Dicoding Indonesia for making this course.
