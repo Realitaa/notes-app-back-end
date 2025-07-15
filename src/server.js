@@ -36,6 +36,13 @@ const init = async () => {
     },
   });
 
+  // registrasi plugin eksternal
+  await server.register([
+    {
+      plugin: Jwt,
+    },
+  ]);
+
   // mendefinisikan strategy autentikasi jwt
   server.auth.strategy('notesapp_jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_KEY,
@@ -54,9 +61,6 @@ const init = async () => {
   });
 
   await server.register([
-    {
-      plugin: Jwt,
-    },
     {
       plugin: notes,
       options: {
