@@ -46,4 +46,4 @@ class CollaborationsService {
   }
 }
 
-module.export = CollaborationsService;
+module.exports = CollaborationsService;
