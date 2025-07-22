@@ -10,12 +10,23 @@ class UploadsHandler {
     const { data } = request.payload;
     this.validator.validateImageHeaders(data.hapi.headers);
 
-    const filename = await this.service.writeFile(data, data.hapi);
+    // // get local file name after write file
+    // const filename = await this.service.writeFile(data, data.hapi);
+
+    // const response = h.response({
+    //   status: 'success',
+    //   data: {
+    //     fileLocation: `http://${process.env.HOST}:${process.env.PORT}/upload/images/${filename}`,
+    //   },
+    // });
+
+    // get full URL of uploaded resource
+    const fileLocation = await this.service.writeFile(data, data.hapi);
 
     const response = h.response({
       status: 'success',
       data: {
-        fileLocation: `http://${process.env.HOST}:${process.env.PORT}/upload/images/${filename}`,
+        fileLocation,
       },
     });
     response.code(201);
