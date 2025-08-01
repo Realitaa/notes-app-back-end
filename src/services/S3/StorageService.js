@@ -1,33 +1,48 @@
-const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+// Docs: https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_s3_code_examples.html
+
 const {
-  getSignedUrl,
-} = require('@aws-sdk/s3-request-presigner');
+  S3Client,
+  PutObjectCommand,
+} = require('@aws-sdk/client-s3');
 
 class StorageService {
   constructor() {
-    this.S3 = new S3Client({
+    this.client = new S3Client({
       region: process.env.AWS_REGION,
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
     });
+    this.bucketName = process.env.AWS_BUCKET_NAME;
   }
 
-  async writeFile(file, meta) {
-    const parameter = new PutObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: meta.filename,
-      Body: file.data,
-      ContentType: meta.headers['content-type'],
-    });
+  async writeFile(fileStream, meta) {
+    const baseFilename = +new Date() + meta.filename;
 
-    await this.S3.send(parameter);
+    try {
+      // Convert stream to buffer
+      const chunks = [];
+      for await (const chunk of fileStream) {
+        chunks.push(chunk);
+      }
+      const buffer = Buffer.concat(chunks);
 
-    return this.createPreSignedUrl({
-      bucket: process.env.AWS_BUCKET_NAME,
-      key: meta.filename,
-    });
+      const uploadCommand = new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: baseFilename,
+        Body: buffer,
+        ContentType: meta.mimetype || 'application/octet-stream',
+      });
+
+      await this.client.send(uploadCommand);
+
+      return baseFilename;
+    } catch (error) {
+      throw new Error('Error uploading files to S3', error);
+    }
   }
 }
 
