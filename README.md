@@ -1,36 +1,46 @@
-# Notes App Back End V2
+# Notes App Back End V3
 
-Source code for Notes App used by Dicoding Academy at course **Learn Back-End Fundamentals with Javascript**. Following the tutorial, this is the first version of the notes app back end after reworking the project from just a CRUD at course **Learn Back-End Basic with Javascript**.
+Source code for Notes App used by Dicoding Academy at course **Learn Back-End Fundamentals with Javascript**.
 
-## What's new in v2?
+## What's new in v3?
 
-1. `c9b217f`: Add users feature. Why? Of course for private notes and collaborations.
-2. `f520f7e`: Authentication (login) feature.
-3. `d0a4947`: Authorization feature. This brings private notes feature.
-4. `9382d2c`: Collaboration feature. Note owner can give other user access to note after adding them as collaborator.
+1. `0f9bb7f`: Add export notes using message broker `RabbitMQ`.
+2. `1842f51`: Implemented local file upload.
+3. `9c84dc6`: Implemented server side caching with Redis.
+4. `257e89c`: Implemented AWS S3 as cloud storage as alternative for local file upload.
+
+## Prerequisite
+
+1. Modern NodeJS (Personally using v23.4).
+2. PostgreSQL.
+3. RabbitMQ
+4. Redis
+5. AWS account if you want to use S3 cloud storage as alternative for local file upload.
 
 ## Folder Structure
 
 1. [`migration`](migrations/) > Database migration file.
 2. [`src/api/`](src/api/) > Routes and bussiness logic.
 3. [`src/exceptions/`](/src/exceptions/) > Custom exceptions.
-4. [`src/services/inMemory/`](/src/services/inMemory/NotesService.js) > Memory based storage using array.
-5. [`src/services/postgres/`](/src/services/postgres/NotesService.js) > RDBMS based storage using Postgres.
-6. [`src/tokenize/TokenManager.js`](src/tokenize/TokenManager.js) > Token manager for JWT Authentication.
-7. [`src/utils/`](src/utils/) > Server utilities.
-8. [`src/validator/`](src/validator/) > Payload validation.
+4. [`src/services/`](/src/services/) > Server services such as Postgres, S3, Redis, etc.
+5. [`src/tokenize/TokenManager.js`](/src/tokenize/TokenManager.js) > JWT token manager.
+6. [`src/utils/`](src/utils/) > Server utilities.
+7. [`src/validator/`](src/validator/) > Payload validation.
+8. [`test/`](test/) > Postman test files.
+9. [`src/server.js`](src/server.js) > Server entry point.
 
 ## Instalation
 
-1. Clone this version
+1. Clone the project
 
     ```sh
-    git clone https://github.com/Realitaa/notes-app-back-end/tree/v2/
+    git clone https://github.com/Realitaa/notes-app-back-end/
     ```
 
 2. Move to source code directory, then install the dependencies
 
     ```sh
+    cd notes-app-back-end
     npm install
     ```
 
@@ -50,7 +60,7 @@ Source code for Notes App used by Dicoding Academy at course **Learn Back-End Fu
     require('crypto').randomBytes(64).toString('hex');
     ```
 
-    Copy each of them to `ACCESS_TOKEN_KEY` and `REFRESH_TOKEN_KEY`.
+    Copy each of the output and paste it to `ACCESS_TOKEN_KEY` and `REFRESH_TOKEN_KEY`.
 
 6. Create database in your local and run the migration
 
@@ -65,6 +75,10 @@ Source code for Notes App used by Dicoding Academy at course **Learn Back-End Fu
     # Or
     npm run start
     ```
+
+## Message Broker
+
+This project uses message broker for `export` feature. The repository for message broker consumer can be find [here](https://github.com/Realitaa/notes-app-queue-consumer).
 
 ## Testing
 
